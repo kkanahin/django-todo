@@ -6,9 +6,6 @@ from django.core.mail import send_mail
 
 from todo.models import Item
 
-# Need for links in email templates
-current_site = Site.objects.get_current()
-
 
 def mark_done(request, done_items):
     # Check for items in the mark_done POST array. If present, change status to complete.
@@ -39,6 +36,8 @@ def del_tasks(request, deleted_items):
 
 def send_notify_mail(request, new_task):
     # Send email
+    # Need for links in email templates
+    current_site = Site.objects.get_current()
     email_subject = render_to_string("todo/email/assigned_subject.txt", {'task': new_task})
     email_body = render_to_string(
         "todo/email/assigned_body.txt",

@@ -19,8 +19,6 @@ from todo.forms import AddListForm, AddItemForm, EditItemForm, AddExternalItemFo
 from todo.models import Item, List, Comment
 from todo.utils import mark_done, undo_completed_task, del_tasks, send_notify_mail
 
-# Need for links in email templates
-current_site = Site.objects.get_current()
 
 
 def check_user_allowed(user):
@@ -183,7 +181,7 @@ def view_task(request, task_id):
                         body=request.POST['comment-body'],
                     )
                     c.save()
-
+                    current_site = Site.objects.get_current()
                     # And email comment to all people who have participated in this thread.
                     email_subject = render_to_string("todo/email/assigned_subject.txt", {'task': task})
                     email_body = render_to_string(
@@ -259,7 +257,7 @@ def external_add(request):
             if settings.DEFAULT_ASSIGNEE:
                 item.assigned_to = User.objects.get(username=settings.DEFAULT_ASSIGNEE)
             item.save()
-
+            current_site = Site.objects.get_current()
             email_subject = render_to_string("todo/email/assigned_subject.txt", {'task': item.title})
             email_body = render_to_string("todo/email/assigned_body.txt", {'task': item, 'site': current_site, })
             try:
